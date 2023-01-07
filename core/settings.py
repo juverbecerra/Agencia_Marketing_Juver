@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
+import os
+import environ  
+
+env = environ.Env()  #vamos a usar cuando queremos usar variables de ambiente junto con OS cuando sean listas o cosas mas complicadas 
+environ.Env.read_env() #esta es una funcion que va a activar environ y va a leer  el archivo de arriba
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,17 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-%j@ujot+^*q@oc6lp(+wk%^=9!mbrrz)8y$x*g*+teacmtes60'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get("DEBUG")
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS_DEV")
 
 
 # Application definition
 
-INSTALLED_APPS = [
+DJANGO_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,6 +44,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+PROJECT_APPS = [
+
+]
+
+THIRD_PARTY_APPS = [
+    
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -123,3 +135,5 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+if not DEBUG:
+    ALLOWED_HOSTS=env.list("ALLOWED_HOSTS_DEPLOY")
